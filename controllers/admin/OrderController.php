@@ -68,6 +68,22 @@ class OrderController extends AppAdminController
         $_SESSION['success'] = 'Заказ удален';
         redirect(ADMIN . '/order');
     }
+    
+    // удаление всех обработанных заказов
+    public function deleteAllCompletedAction()
+    {
+        \R::begin();
+        try{
+            \R::exec("DELETE FROM orders WHERE status = ?", ["completed"]);
+            \R::commit();
+            $_SESSION['success'] = 'Все обработанные заказы удалены';
+            redirect();
+        }catch(\Exception $e){
+            \R::rollback();
+            $_SESSION['error'] = 'Не получилось удалить ВСЕ ранее обработанные заказы';
+            redirect();
+        }
+    }
 
 
 }
